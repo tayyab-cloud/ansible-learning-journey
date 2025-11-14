@@ -1,0 +1,20 @@
+- name: Install and manage Nginx
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Install Nginx using apt
+      ansible.builtin.apt:
+        name: nginx
+        state: latest
+        update_cache: yes
+
+    - name: Ensure Nginx service is started and enabled
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: 
+    - name: deploy custom index.html
+      ansible.builtin.copy:
+        dest: /var/www/html/index.html
+        src: index.html
+        mode: '0644'
