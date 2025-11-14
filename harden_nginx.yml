@@ -1,0 +1,25 @@
+- name: secure nginx configuration
+  hosts: webservers
+  become: yes
+
+  tasks:
+    - name: Remove Nginx default site configuration
+      ansible.builtin.file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: Copy the new site configuration file to sites-available
+      ansible.builtin.copy:
+        src: nginx.conf # Rename your local file to be specific
+        dest: /etc/nginx/sites-available/nginx.conf
+        mode: '0644'
+
+    - name: Enable the new site configuration using a symbolic link
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/nginx.conf
+        dest: /etc/nginx/sites-enabled/nginx.conf
+        state: link
+    - name: Restart Nginx to apply changes
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
