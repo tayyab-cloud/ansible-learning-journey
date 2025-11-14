@@ -10,7 +10,7 @@
 
     - name: Copy the new site configuration file to sites-available
       ansible.builtin.copy:
-        src: nginx.conf # Rename your local file to be specific
+        src: files/nginx.conf # Rename your local file to be specific
         dest: /etc/nginx/sites-available/nginx.conf
         mode: '0644'
 
