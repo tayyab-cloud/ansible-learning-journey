@@ -1,0 +1,16 @@
+- name: Install common software packages
+  hosts: webservers
+  become: yes
+  vars:
+    packages_to_install:
+      - nginx
+      - git
+      - tree
+      - vim
+  tasks:
+    - name: "Install required packages"
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: latest
+        update_cache: yes
+      loop: "{{ packages_to_install }}"
