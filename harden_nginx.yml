@@ -27,7 +27,12 @@
       # WAJAH: Agar symlink naya bane, to service ko reload karna zaroori hai.
       notify: Reload Nginx
       
-   
+    - name: Allow HTTP traffic through UFW
+      community.general.ufw:
+        rule: allow
+        port: '80'
+        proto: tcp
+      when: ansible_os_family == "Debian"
 
 # HANDLERS SECTION
   handlers:
