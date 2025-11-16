@@ -1,4 +1,5 @@
-- name: secure nginx configuration
+---
+- name: Secure Nginx Configuration
   hosts: webservers
   become: yes
 
@@ -7,19 +8,31 @@
       ansible.builtin.file:
         path: /etc/nginx/sites-enabled/default
         state: absent
+      # WAJAH: Agar default config delete ho, to service ko reload karna zaroori hai.
+      notify: Reload Nginx
 
-    - name: Copy the new site configuration file to sites-available
+    - name: Copy the new site configuration file
       ansible.builtin.copy:
-        src: files/nginx.conf # Rename your local file to be specific
+        src: files/nginx.conf 
         dest: /etc/nginx/sites-available/nginx.conf
         mode: '0644'
+      # WAJAH: Agar config file ka content badle, to service ko reload karna zaroori hai.
+      notify: Reload Nginx
 
     - name: Enable the new site configuration using a symbolic link
       ansible.builtin.file:
         src: /etc/nginx/sites-available/nginx.conf
         dest: /etc/nginx/sites-enabled/nginx.conf
         state: link
-    - name: Restart Nginx to apply changes
+      # WAJAH: Agar symlink naya bane, to service ko reload karna zaroori hai.
+      notify: Reload Nginx
+      
+   
+
+# HANDLERS SECTION
+  handlers:
+    - name: Reload Nginx
       ansible.builtin.service:
         name: nginx
-        state: restarted
+        # YEH HAI SAHI TAREQA: ZERO DOWNTIME, ZYADA RELIABLE
+        state: reloaded
