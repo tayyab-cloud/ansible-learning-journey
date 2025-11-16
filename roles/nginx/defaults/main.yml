@@ -1,3 +1,16 @@
-#SPDX-License-Identifier: MIT-0
----
 # defaults file for nginx
+---
+# roles/nginx/defaults/main.yml
+
+# Network Settings
+nginx_port: 80
+
+# Performance Settings
+nginx_worker_processes: 1
+
+# Server Identity
+nginx_server_name: _
+
+# Logging Settings
+nginx_access_log_path: /var/log/nginx/access.log
+nginx_error_log_path: /var/log/nginx/error.log
