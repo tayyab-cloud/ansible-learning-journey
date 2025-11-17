@@ -1,48 +1,17 @@
+
 # roles/nginx/templates/nginx.conf.j2
+   
+    # Server Block Configuration for {{ nginx_server_name }}
+server {
+    listen {{ nginx_port }};
+    listen [::]:{{ nginx_port }};
 
-# Global settings
-user www-data;
-worker_processes {{ nginx_worker_processes }};
-pid /run/nginx.pid;
+    server_name {{ nginx_server_name }};
 
-events {
-    worker_connections 1024;
-}
+    root /var/www/html;
+    index index.html index.htm;
 
-http {
-    # Basic Settings
-    sendfile on;
-    tcp_nopush on;
-    tcp_nodelay on;
-    keepalive_timeout 65;
-    types_hash_max_size 2048;
-    include /etc/nginx/mime.types;
-    default_type application/octet-stream;
-
-    # Logging Settings
-    access_log {{ nginx_access_log_path }};
-    error_log {{ nginx_error_log_path }};
-
-    # Gzip Settings
-    gzip on;
-    gzip_disable "msie6";
-
-    # Virtual Host Configs
-    include /etc/nginx/conf.d/*.conf;
-    include /etc/nginx/sites-enabled/*;
-
-    # Default Server Block
-    server {
-        listen {{ nginx_port }};
-        listen [::]:{{ nginx_port }};
-
-        server_name {{ nginx_server_name }};
-
-        root /var/www/html;
-        index index.html index.htm;
-
-        location / {
-            try_files $uri $uri/ =404;
-        }
+    location / {
+        try_files $uri $uri/ =404;
     }
 }
