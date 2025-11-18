@@ -1,0 +1,19 @@
+# tasks file for roles/apache
+- name: install apache on RedHat based systems
+  ansible.builtin.yum:
+    name: httpd
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: install apache on Debian based systems
+  ansible.builtin.apt:
+    name: apache2
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: ensure apache is started and enabled on different systems
+  ansible.builtin.service:
+    name: "{{ 'httpd' if ansible_os_family == 'RedHat' else 'apache2' }}"
+    state: started
+    enabled: yes
