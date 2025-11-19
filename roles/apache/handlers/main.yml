@@ -1,3 +1,5 @@
-#SPDX-License-Identifier: MIT-0
----
 # handlers file for roles/apache
+- name: Reload apache
+  ansible.builtin.service:
+    name: "{{ 'httpd' if ansible_os_family == 'RedHat' else 'apache2' }}"
+    state: reloaded

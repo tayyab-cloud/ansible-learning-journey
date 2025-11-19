@@ -17,3 +17,40 @@
     name: "{{ 'httpd' if ansible_os_family == 'RedHat' else 'apache2' }}"
     state: started
     enabled: yes
+
+- name: Configure Apache port on Debian family
+  ansible.builtin.template:
+    src: ports.conf.j2
+    dest: /etc/apache2/ports.conf
+  when: ansible_facts['os_family'] == "Debian"
+  notify: Reload apache
+
+- name: Create a dedicated document root for Apache
+  ansible.builtin.file:
+    path: /var/www/apache.localhost
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+  
+- name: Create a default index.html for Apache
+  ansible.builtin.copy:
+    content: "<html><body><h1>Apache is running on port 8080</h1></body></html>"
+    dest: /var/www/apache.localhost/index.html
+    owner: www-data
+    group: www-data
+    mode: '0644'
+
+- name: Update Apache site configuration to use new document root
+  ansible.builtin.template:
+    src: apache-site.conf.j2
+    dest: /etc/apache2/sites-available/000-default.conf
+  when: ansible_facts['os_family'] == "Debian"
+  notify: Reload apache
+
+- name: Configure Apache port on RedHat family
+  ansible.builtin.template:
+    src: httpd.conf.j2  # RedHat ke liye alag template file behtar hai
+    dest: /etc/httpd/conf/httpd.conf
+  when: ansible_facts['os_family'] == "RedHat"
+  notify: Reload apache

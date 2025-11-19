@@ -1,0 +1,8 @@
+# Ansible Managed: Apache Site Configuration
+<VirtualHost *:{{ apache_port }}>
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/apache.localhost
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
